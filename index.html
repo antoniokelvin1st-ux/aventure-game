@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Adventure Tribe: Hike Rush</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:Arial,sans-serif;
+  background:#050505;
+  color:#f4f1ea;
+  overflow:hidden;
+}
+
+#game{
+  width:100vw;
+  height:100vh;
+  position:relative;
+  background:linear-gradient(#10170f,#28351f,#0b0b0b);
+  overflow:hidden;
+}
+
+.mountain{
+  position:absolute;
+  bottom:210px;
+  width:0;
+  height:0;
+  border-left:220px solid transparent;
+  border-right:220px solid transparent;
+  border-bottom:260px solid #1d2418;
+  opacity:.8;
+}
+
+.m1{left:-80px}
+.m2{left:260px;border-bottom-color:#26311f}
+.m3{right:-120px}
+
+#trail{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:210px;
+  background:linear-gradient(#5a4a2e,#2b2418);
+  border-top:5px solid #c2a878;
+}
+
+#player{
+  position:absolute;
+  left:80px;
+  bottom:210px;
+  width:55px;
+  height:75px;
+  background:#c2a878;
+  border-radius:18px 18px 10px 10px;
+  box-shadow:0 0 25px rgba(194,168,120,.5);
+}
+
+#player::before{
+  content:"";
+  position:absolute;
+  top:-25px;
+  left:12px;
+  width:32px;
+  height:32px;
+  background:#111;
+  border-radius:50%;
+  border:3px solid #c2a878;
+}
+
+.item,.obstacle{
+  position:absolute;
+  bottom:210px;
+  font-size:45px;
+}
+
+#hud{
+  position:absolute;
+  top:20px;
+  left:20px;
+  right:20px;
+  display:flex;
+  justify-content:space-between;
+  z-index:5;
+  font-weight:bold;
+}
+
+.panel{
+  background:rgba(0,0,0,.55);
+  border:1px solid rgba(255,255,255,.15);
+  padding:12px 18px;
+  border-radius:20px;
+  backdrop-filter:blur(10px);
+}
+
+.screen{
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  background:rgba(0,0,0,.78);
+  z-index:20;
+  padding:25px;
+}
+
+.box{
+  max-width:650px;
+  padding:40px;
+  border-radius:30px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(18px);
+}
+
+h1{
+  font-size:3rem;
+  letter-spacing:3px;
+  margin-bottom:15px;
+}
+
+.gold{color:#c2a878}
+
+p{
+  color:#ccc;
+  line-height:1.7;
+  margin-bottom:25px;
+}
+
+button{
+  padding:15px 35px;
+  border:none;
+  border-radius:40px;
+  background:#c2a878;
+  color:#050505;
+  font-weight:900;
+  cursor:pointer;
+  letter-spacing:1px;
+}
+
+#controls{
+  position:absolute;
+  bottom:25px;
+  left:0;
+  width:100%;
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  z-index:10;
+}
+
+.control{
+  width:80px;
+  height:60px;
+  border-radius:20px;
+  background:rgba(0,0,0,.55);
+  border:1px solid rgba(255,255,255,.2);
+  color:white;
+  font-size:1.4rem;
+}
+
+.hidden{display:none}
+
+@media(max-width:700px){
+  h1{font-size:2rem}
+  #player{left:55px}
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+  <div class="mountain m1"></div>
+  <div class="mountain m2"></div>
+  <div class="mountain m3"></div>
+
+  <div id="hud">
+    <div class="panel">Score: <span id="score">0</span></div>
+    <div class="panel">High: <span id="high">0</span></div>
+  </div>
+
+  <div id="player"></div>
+  <div id="trail"></div>
+
+  <div id="startScreen" class="screen">
+    <div class="box">
+      <h1>ADVENTURE TRIBE:<br><span class="gold">HIKE RUSH</span></h1>
+      <p>Escape • Connect • Explore</p>
+      <p>Jump over rocks, logs, puddles, and wild bushes. Collect water, tents, backpacks, and badges to grow your score.</p>
+      <button onclick="startGame()">START HIKE</button>
+    </div>
+  </div>
+
+  <div id="gameOverScreen" class="screen hidden">
+    <div class="box">
+      <h1>HIKE ENDED</h1>
+      <p>Your Score: <span id="finalScore">0</span></p>
+      <p>High Score: <span id="finalHigh">0</span></p>
+      <button onclick="startGame()">TRY AGAIN</button>
+    </div>
+  </div>
+
+  <div id="controls">
+    <button class="control" ontouchstart="moveLeft()" onclick="moveLeft()">←</button>
+    <button class="control" ontouchstart="jump()" onclick="jump()">↑</button>
+    <button class="control" ontouchstart="moveRight()" onclick="moveRight()">→</button>
+  </div>
+
+</div>
+
+<script>
+const game = document.getElementById("game");
+const player = document.getElementById("player");
+const scoreEl = document.getElementById("score");
+const highEl = document.getElementById("high");
+
+let score = 0;
+let high = localStorage.getItem("hikeHighScore") || 0;
+let playing = false;
+let speed = 6;
+let playerBottom = 210;
+let playerLeft = 80;
+let jumping = false;
+let gameLoop;
+let spawnLoop;
+
+highEl.innerText = high;
+
+function startGame(){
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("gameOverScreen").classList.add("hidden");
+
+  document.querySelectorAll(".obstacle,.item").forEach(e=>e.remove());
+
+  score = 0;
+  speed = 6;
+  playerBottom = 210;
+  playerLeft = 80;
+  jumping = false;
+  playing = true;
+
+  player.style.bottom = playerBottom + "px";
+  player.style.left = playerLeft + "px";
+
+  scoreEl.innerText = score;
+
+  clearInterval(gameLoop);
+  clearInterval(spawnLoop);
+
+  gameLoop = setInterval(updateGame,20);
+  spawnLoop = setInterval(spawnObject,1100);
+}
+
+function updateGame(){
+  if(!playing) return;
+
+  score++;
+  scoreEl.innerText = score;
+
+  if(score % 500 === 0){
+    speed += 1;
+  }
+
+  document.querySelectorAll(".obstacle,.item").forEach(obj=>{
+    let left = parseInt(obj.style.left);
+    obj.style.left = (left - speed) + "px";
+
+    if(left < -80){
+      obj.remove();
+    }
+
+    if(checkCollision(player,obj)){
+      if(obj.classList.contains("obstacle")){
+        endGame();
+      }else{
+        score += 150;
+        obj.remove();
+      }
+    }
+  });
+}
+
+function spawnObject(){
+  if(!playing) return;
+
+  const obj = document.createElement("div");
+  const isObstacle = Math.random() < .65;
+
+  obj.className = isObstacle ? "obstacle" : "item";
+
+  const obstacles = ["🪨","🪵","🌊","🌿"];
+  const items = ["💧","🎒","⛺","🏕️","🏅"];
+
+  obj.innerText = isObstacle
+    ? obstacles[Math.floor(Math.random()*obstacles.length)]
+    : items[Math.floor(Math.random()*items.length)];
+
+  obj.style.left = window.innerWidth + "px";
+  obj.style.bottom = "210px";
+
+  game.appendChild(obj);
+}
+
+function jump(){
+  if(jumping || !playing) return;
+
+  jumping = true;
+  let up = setInterval(()=>{
+    if(playerBottom >= 380){
+      clearInterval(up);
+
+      let down = setInterval(()=>{
+        if(playerBottom <= 210){
+          clearInterval(down);
+          playerBottom = 210;
+          jumping = false;
+        }else{
+          playerBottom -= 8;
+          player.style.bottom = playerBottom + "px";
+        }
+      },20);
+
+    }else{
+      playerBottom += 10;
+      player.style.bottom = playerBottom + "px";
+    }
+  },20);
+}
+
+function moveLeft(){
+  if(!playing) return;
+  playerLeft = Math.max(20, playerLeft - 45);
+  player.style.left = playerLeft + "px";
+}
+
+function moveRight(){
+  if(!playing) return;
+  playerLeft = Math.min(window.innerWidth - 90, playerLeft + 45);
+  player.style.left = playerLeft + "px";
+}
+
+document.addEventListener("keydown",(e)=>{
+  if(e.code === "Space" || e.code === "ArrowUp") jump();
+  if(e.code === "ArrowLeft") moveLeft();
+  if(e.code === "ArrowRight") moveRight();
+});
+
+function checkCollision(a,b){
+  const ar = a.getBoundingClientRect();
+  const br = b.getBoundingClientRect();
+
+  return !(
+    ar.right < br.left ||
+    ar.left > br.right ||
+    ar.bottom < br.top ||
+    ar.top > br.bottom
+  );
+}
+
+function endGame(){
+  playing = false;
+  clearInterval(gameLoop);
+  clearInterval(spawnLoop);
+
+  if(score > high){
+    high = score;
+    localStorage.setItem("hikeHighScore", high);
+  }
+
+  highEl.innerText = high;
+  document.getElementById("finalScore").innerText = score;
+  document.getElementById("finalHigh").innerText = high;
+  document.getElementById("gameOverScreen").classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>

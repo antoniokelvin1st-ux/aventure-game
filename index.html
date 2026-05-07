@@ -1,380 +1,551 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Adventure Tribe: Hike Rush</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adventure Tribe | Escape • Connect • Explore</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800;900&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+*{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}
+
 body{
-  font-family:Arial,sans-serif;
-  background:#050505;
-  color:#f4f1ea;
-  overflow:hidden;
+font-family:'Montserrat',sans-serif;
+background:#050505;
+color:#f4f1ea;
+overflow-x:hidden;
 }
 
-#game{
-  width:100vw;
-  height:100vh;
-  position:relative;
-  background:linear-gradient(#10170f,#28351f,#0b0b0b);
-  overflow:hidden;
+#loader{
+position:fixed;
+inset:0;
+background:#000;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+font-weight:900;
+letter-spacing:5px;
+transition:1s;
 }
 
-.mountain{
-  position:absolute;
-  bottom:210px;
-  width:0;
-  height:0;
-  border-left:220px solid transparent;
-  border-right:220px solid transparent;
-  border-bottom:260px solid #1d2418;
-  opacity:.8;
+nav{
+position:fixed;
+top:0;
+width:100%;
+padding:20px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(0,0,0,.5);
+backdrop-filter:blur(12px);
+z-index:1000;
 }
 
-.m1{left:-80px}
-.m2{left:260px;border-bottom-color:#26311f}
-.m3{right:-120px}
+.logo{font-weight:900;letter-spacing:4px}
 
-#trail{
-  position:absolute;
-  bottom:0;
-  width:100%;
-  height:210px;
-  background:linear-gradient(#5a4a2e,#2b2418);
-  border-top:5px solid #c2a878;
+nav ul{display:flex;gap:25px;list-style:none}
+
+nav a{
+text-decoration:none;
+color:white;
+font-size:.9rem;
+transition:.3s;
 }
 
-#player{
-  position:absolute;
-  left:80px;
-  bottom:210px;
-  width:55px;
-  height:75px;
-  background:#c2a878;
-  border-radius:18px 18px 10px 10px;
-  box-shadow:0 0 25px rgba(194,168,120,.5);
+nav a:hover{color:#d0c5a5}
+
+.hero{
+min-height:100vh;
+background:
+linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.88)),
+url("adventuretribe-brand.png");
+background-size:cover;
+background-position:center;
+display:flex;
+align-items:end;
+padding:120px 8%;
 }
 
-#player::before{
-  content:"";
-  position:absolute;
-  top:-25px;
-  left:12px;
-  width:32px;
-  height:32px;
-  background:#111;
-  border-radius:50%;
-  border:3px solid #c2a878;
+.hero-content{
+max-width:750px;
+animation:fadeUp 1.5s ease;
 }
 
-.item,.obstacle{
-  position:absolute;
-  bottom:210px;
-  font-size:45px;
+.hero h1{
+font-size:4.8rem;
+font-weight:900;
+letter-spacing:6px;
 }
 
-#hud{
-  position:absolute;
-  top:20px;
-  left:20px;
-  right:20px;
-  display:flex;
-  justify-content:space-between;
-  z-index:5;
-  font-weight:bold;
+.hero p{
+margin:15px 0;
+color:#d0c5a5;
+letter-spacing:3px;
 }
 
-.panel{
-  background:rgba(0,0,0,.55);
-  border:1px solid rgba(255,255,255,.15);
-  padding:12px 18px;
-  border-radius:20px;
-  backdrop-filter:blur(10px);
+.btns{
+margin-top:30px;
+display:flex;
+gap:15px;
+flex-wrap:wrap;
 }
 
-.screen{
-  position:absolute;
-  inset:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  background:rgba(0,0,0,.78);
-  z-index:20;
-  padding:25px;
+.btn{
+padding:14px 28px;
+border-radius:40px;
+text-decoration:none;
+font-weight:800;
+letter-spacing:1px;
+transition:.35s;
+display:inline-block;
 }
 
-.box{
-  max-width:650px;
-  padding:40px;
-  border-radius:30px;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.15);
-  backdrop-filter:blur(18px);
+.primary{background:#f4f1ea;color:#050505}
+.secondary{border:1px solid #f4f1ea;color:#f4f1ea}
+
+.btn:hover{transform:translateY(-5px)}
+
+section{padding:100px 8%}
+
+.title{
+text-align:center;
+font-size:2.5rem;
+letter-spacing:4px;
+margin-bottom:55px;
 }
 
-h1{
-  font-size:3rem;
-  letter-spacing:3px;
-  margin-bottom:15px;
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:28px;
 }
 
-.gold{color:#c2a878}
+.card{
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.08);
+border-radius:22px;
+overflow:hidden;
+backdrop-filter:blur(15px);
+transition:.4s;
+}
 
-p{
-  color:#ccc;
-  line-height:1.7;
-  margin-bottom:25px;
+.card:hover{transform:translateY(-10px)}
+
+.card img{
+width:100%;
+height:280px;
+object-fit:cover;
+}
+
+.info{padding:22px}
+
+.price{
+color:#d0c5a5;
+margin:12px 0;
+font-weight:800;
 }
 
 button{
-  padding:15px 35px;
-  border:none;
-  border-radius:40px;
-  background:#c2a878;
-  color:#050505;
-  font-weight:900;
-  cursor:pointer;
-  letter-spacing:1px;
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+background:#f4f1ea;
+font-weight:800;
+cursor:pointer;
+transition:.3s;
 }
 
-#controls{
-  position:absolute;
-  bottom:25px;
-  left:0;
-  width:100%;
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  z-index:10;
+button:hover{transform:translateY(-4px)}
+
+.about{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:50px;
+align-items:center;
 }
 
-.control{
-  width:80px;
-  height:60px;
-  border-radius:20px;
-  background:rgba(0,0,0,.55);
-  border:1px solid rgba(255,255,255,.2);
-  color:white;
-  font-size:1.4rem;
+.about img{
+width:100%;
+border-radius:24px;
 }
 
-.hidden{display:none}
+.about p{
+line-height:1.9;
+color:#aaa;
+}
 
-@media(max-width:700px){
-  h1{font-size:2rem}
-  #player{left:55px}
+.contact{
+max-width:700px;
+margin:auto;
+background:rgba(255,255,255,.05);
+padding:35px;
+border-radius:25px;
+}
+
+input,select,textarea{
+width:100%;
+padding:14px;
+margin-bottom:15px;
+border:none;
+border-radius:12px;
+background:#111;
+color:white;
+}
+
+.feature{
+padding:30px;
+text-align:center;
+}
+
+.gallery img{height:330px}
+
+footer{
+background:#000;
+padding:60px 8%;
+text-align:center;
+color:#999;
+}
+
+footer h2{
+color:white;
+margin-bottom:15px;
+letter-spacing:4px;
+}
+
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(50px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+@media(max-width:850px){
+nav ul{display:none}
+.hero h1{font-size:2.8rem}
+.about{grid-template-columns:1fr}
 }
 </style>
 </head>
 
 <body>
 
-<div id="game">
+<div id="loader">ADVENTURE TRIBE</div>
 
-  <div class="mountain m1"></div>
-  <div class="mountain m2"></div>
-  <div class="mountain m3"></div>
+<nav>
+<div class="logo">ADVENTURE TRIBE</div>
 
-  <div id="hud">
-    <div class="panel">Score: <span id="score">0</span></div>
-    <div class="panel">High: <span id="high">0</span></div>
-  </div>
+<ul>
+<li><a href="#">Home</a></li>
+<li><a href="#activities">Activities</a></li>
+<li><a href="#shop">Merchandise</a></li>
+<li><a href="#booking">Booking</a></li>
+<li><a href="#live-reviews">Reviews</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</nav>
 
-  <div id="player"></div>
-  <div id="trail"></div>
+<section class="hero">
+<div class="hero-content">
+<h1>ADVENTURE TRIBE</h1>
+<p>ESCAPE • CONNECT • EXPLORE</p>
 
-  <div id="startScreen" class="screen">
-    <div class="box">
-      <h1>ADVENTURE TRIBE:<br><span class="gold">HIKE RUSH</span></h1>
-      <p>Escape • Connect • Explore</p>
-      <p>Jump over rocks, logs, puddles, and wild bushes. Collect water, tents, backpacks, and badges to grow your score.</p>
-      <button onclick="startGame()">START HIKE</button>
-    </div>
-  </div>
+<div class="btns">
+<a href="#activities" class="btn primary">Book Adventure</a>
+<a href="#shop" class="btn secondary">Shop Merchandise</a>
+</div>
+</div>
+</section>
 
-  <div id="gameOverScreen" class="screen hidden">
-    <div class="box">
-      <h1>HIKE ENDED</h1>
-      <p>Your Score: <span id="finalScore">0</span></p>
-      <p>High Score: <span id="finalHigh">0</span></p>
-      <button onclick="startGame()">TRY AGAIN</button>
-    </div>
-  </div>
+<section class="about">
+<img src="adventuretribe-brand.png">
 
-  <div id="controls">
-    <button class="control" ontouchstart="moveLeft()" onclick="moveLeft()">←</button>
-    <button class="control" ontouchstart="jump()" onclick="jump()">↑</button>
-    <button class="control" ontouchstart="moveRight()" onclick="moveRight()">→</button>
-  </div>
+<div>
+<h2 class="title">THE TRIBE</h2>
+<p>
+Adventure Tribe is a lifestyle movement built for explorers, creators,
+travelers, and people who want to escape ordinary life.
+We organize curated adventure experiences including hiking, camping,
+road trips, beach picnics, and outdoor activities while also releasing
+premium merchandise inspired by exploration culture.
+</p>
+</div>
+</section>
 
+<section id="activities">
+<h2 class="title">UPCOMING EXPERIENCES</h2>
+
+<div class="grid">
+
+<div class="card">
+<img src="adventuretribe-brand.png">
+<div class="info">
+<h3>Mountain Hiking</h3>
+<p class="price">KSh 4,500</p>
+<button onclick="selectAdventure('Mountain Hiking')">Buy Ticket</button>
+</div>
 </div>
 
+<div class="card">
+<img src="adventuretribe-brand.png">
+<div class="info">
+<h3>Camping Weekend</h3>
+<p class="price">KSh 6,000</p>
+<button onclick="selectAdventure('Camping Weekend')">Buy Ticket</button>
+</div>
+</div>
+
+<div class="card">
+<img src="adventuretribe-brand.png">
+<div class="info">
+<h3>Beach Picnic</h3>
+<p class="price">KSh 3,000</p>
+<button onclick="selectAdventure('Beach Picnic')">Buy Ticket</button>
+</div>
+</div>
+
+</div>
+</section>
+
+<section id="shop">
+<h2 class="title">MERCHANDISE</h2>
+
+<div class="grid">
+
+<div class="card">
+<img src="adventuretribe-brand.png">
+<div class="info">
+<h3>Ninja Balaclava Hoodie</h3>
+<p class="price">KSh 6,500</p>
+<button onclick="addToCart('Balaclava Hoodie',6500)">Add To Cart</button>
+</div>
+</div>
+
+<div class="card">
+<img src="adventuretribe-brand.png">
+<div class="info">
+<h3>Adventure Sweatpants</h3>
+<p class="price">KSh 4,500</p>
+<button onclick="addToCart('Adventure Sweatpants',4500)">Add To Cart</button>
+</div>
+</div>
+
+<div class="card">
+<img src="adventuretribe-brand.png">
+<div class="info">
+<h3>Adventure Tribe Cap</h3>
+<p class="price">KSh 2,500</p>
+<button onclick="addToCart('Adventure Tribe Cap',2500)">Add To Cart</button>
+</div>
+</div>
+
+</div>
+</section>
+
+<section>
+<h2 class="title">YOUR CART</h2>
+
+<div class="contact">
+<div id="cart-items">No items yet.</div>
+<br>
+<h3 id="total">Total: KSh 0</h3>
+</div>
+</section>
+
+<section id="booking">
+<h2 class="title">BOOK / ORDER</h2>
+
+<div class="contact">
+
+<input type="text" id="customerName" placeholder="Full Name">
+<input type="text" id="customerPhone" placeholder="Phone Number">
+<input type="text" id="customerLocation" placeholder="Location">
+
+<select id="selectedAdventure">
+<option>Select Adventure</option>
+<option>Mountain Hiking</option>
+<option>Camping Weekend</option>
+<option>Beach Picnic</option>
+<option>Road Trip</option>
+<option>Outdoor Picnic</option>
+</select>
+
+<select id="selectedProduct">
+<option>Select Merchandise</option>
+<option>Balaclava Hoodie</option>
+<option>Adventure Sweatpants</option>
+<option>Adventure Tribe Cap</option>
+<option>No Merchandise</option>
+</select>
+
+<select id="size">
+<option>Select Size</option>
+<option>S</option>
+<option>M</option>
+<option>L</option>
+<option>XL</option>
+<option>One Size</option>
+</select>
+
+<textarea id="notes" rows="4" placeholder="Extra notes"></textarea>
+
+<button onclick="sendAdventureOrder()">Send Booking / Order To WhatsApp</button>
+
+<br><br>
+
+<a class="btn secondary" href="mailto:thebrandguyagency@gmail.com?subject=Adventure%20Tribe%20Booking%20Inquiry">Email Inquiry</a>
+
+</div>
+</section>
+
+<section>
+<h2 class="title">WHY ADVENTURE TRIBE</h2>
+
+<div class="grid">
+<div class="card feature"><h3>Curated Adventures</h3><p>Premium planned outdoor experiences.</p></div>
+<div class="card feature"><h3>Safe Trips</h3><p>Organized activities with clear communication.</p></div>
+<div class="card feature"><h3>Community</h3><p>Meet new people and build real connections.</p></div>
+<div class="card feature"><h3>Premium Merch</h3><p>Streetwear inspired by adventure culture.</p></div>
+</div>
+</section>
+
+<section>
+<h2 class="title">LOOKBOOK</h2>
+
+<div class="grid gallery">
+<img src="adventuretribe-brand.png">
+<img src="adventuretribe-brand.png">
+<img src="adventuretribe-brand.png">
+</div>
+</section>
+
+<section id="live-reviews">
+<h2 class="title">LIVE TRIBE REVIEWS</h2>
+
+<div class="contact">
+<input type="text" id="reviewName" placeholder="Your Name">
+<textarea id="reviewText" rows="4" placeholder="Share your experience with Adventure Tribe..."></textarea>
+
+<button onclick="addReview()">Post Review</button>
+</div>
+
+<br><br>
+
+<div class="grid" id="reviews-container">
+
+<div class="card feature">
+<p>“The camping experience was unforgettable.”</p>
+<br>
+<strong>— Kelvin</strong>
+</div>
+
+<div class="card feature">
+<p>“Best adventure community in Nairobi.”</p>
+<br>
+<strong>— Adrian</strong>
+</div>
+
+</div>
+</section>
+
+<section id="contact">
+<h2 class="title">CONTACT</h2>
+
+<div class="contact">
+<p>WhatsApp: 0795165085</p>
+<p>Email: thebrandguyagency@gmail.com</p>
+<p>Instagram: @adventuretribe</p>
+<p>TikTok: @adventuretribe</p>
+</div>
+</section>
+
+<footer>
+<h2>ADVENTURE TRIBE</h2>
+<p>ESCAPE • CONNECT • EXPLORE</p>
+<br>
+<p>© 2026 Adventure Tribe. All Rights Reserved.</p>
+</footer>
+
 <script>
-const game = document.getElementById("game");
-const player = document.getElementById("player");
-const scoreEl = document.getElementById("score");
-const highEl = document.getElementById("high");
+window.addEventListener("load",()=>{
+document.getElementById("loader").style.opacity="0";
 
-let score = 0;
-let high = localStorage.getItem("hikeHighScore") || 0;
-let playing = false;
-let speed = 6;
-let playerBottom = 210;
-let playerLeft = 80;
-let jumping = false;
-let gameLoop;
-let spawnLoop;
-
-highEl.innerText = high;
-
-function startGame(){
-  document.getElementById("startScreen").classList.add("hidden");
-  document.getElementById("gameOverScreen").classList.add("hidden");
-
-  document.querySelectorAll(".obstacle,.item").forEach(e=>e.remove());
-
-  score = 0;
-  speed = 6;
-  playerBottom = 210;
-  playerLeft = 80;
-  jumping = false;
-  playing = true;
-
-  player.style.bottom = playerBottom + "px";
-  player.style.left = playerLeft + "px";
-
-  scoreEl.innerText = score;
-
-  clearInterval(gameLoop);
-  clearInterval(spawnLoop);
-
-  gameLoop = setInterval(updateGame,20);
-  spawnLoop = setInterval(spawnObject,1100);
-}
-
-function updateGame(){
-  if(!playing) return;
-
-  score++;
-  scoreEl.innerText = score;
-
-  if(score % 500 === 0){
-    speed += 1;
-  }
-
-  document.querySelectorAll(".obstacle,.item").forEach(obj=>{
-    let left = parseInt(obj.style.left);
-    obj.style.left = (left - speed) + "px";
-
-    if(left < -80){
-      obj.remove();
-    }
-
-    if(checkCollision(player,obj)){
-      if(obj.classList.contains("obstacle")){
-        endGame();
-      }else{
-        score += 150;
-        obj.remove();
-      }
-    }
-  });
-}
-
-function spawnObject(){
-  if(!playing) return;
-
-  const obj = document.createElement("div");
-  const isObstacle = Math.random() < .65;
-
-  obj.className = isObstacle ? "obstacle" : "item";
-
-  const obstacles = ["🪨","🪵","🌊","🌿"];
-  const items = ["💧","🎒","⛺","🏕️","🏅"];
-
-  obj.innerText = isObstacle
-    ? obstacles[Math.floor(Math.random()*obstacles.length)]
-    : items[Math.floor(Math.random()*items.length)];
-
-  obj.style.left = window.innerWidth + "px";
-  obj.style.bottom = "210px";
-
-  game.appendChild(obj);
-}
-
-function jump(){
-  if(jumping || !playing) return;
-
-  jumping = true;
-  let up = setInterval(()=>{
-    if(playerBottom >= 380){
-      clearInterval(up);
-
-      let down = setInterval(()=>{
-        if(playerBottom <= 210){
-          clearInterval(down);
-          playerBottom = 210;
-          jumping = false;
-        }else{
-          playerBottom -= 8;
-          player.style.bottom = playerBottom + "px";
-        }
-      },20);
-
-    }else{
-      playerBottom += 10;
-      player.style.bottom = playerBottom + "px";
-    }
-  },20);
-}
-
-function moveLeft(){
-  if(!playing) return;
-  playerLeft = Math.max(20, playerLeft - 45);
-  player.style.left = playerLeft + "px";
-}
-
-function moveRight(){
-  if(!playing) return;
-  playerLeft = Math.min(window.innerWidth - 90, playerLeft + 45);
-  player.style.left = playerLeft + "px";
-}
-
-document.addEventListener("keydown",(e)=>{
-  if(e.code === "Space" || e.code === "ArrowUp") jump();
-  if(e.code === "ArrowLeft") moveLeft();
-  if(e.code === "ArrowRight") moveRight();
+setTimeout(()=>{
+document.getElementById("loader").style.display="none";
+},1000);
 });
 
-function checkCollision(a,b){
-  const ar = a.getBoundingClientRect();
-  const br = b.getBoundingClientRect();
+let total = 0;
+let cartList = [];
 
-  return !(
-    ar.right < br.left ||
-    ar.left > br.right ||
-    ar.bottom < br.top ||
-    ar.top > br.bottom
-  );
+function addToCart(product,price){
+const cart = document.getElementById("cart-items");
+
+if(cart.innerText === "No items yet."){
+cart.innerHTML = "";
 }
 
-function endGame(){
-  playing = false;
-  clearInterval(gameLoop);
-  clearInterval(spawnLoop);
+const item = document.createElement("p");
+item.innerHTML = product + " - KSh " + price;
 
-  if(score > high){
-    high = score;
-    localStorage.setItem("hikeHighScore", high);
-  }
+cart.appendChild(item);
+cartList.push(product + " - KSh " + price);
 
-  highEl.innerText = high;
-  document.getElementById("finalScore").innerText = score;
-  document.getElementById("finalHigh").innerText = high;
-  document.getElementById("gameOverScreen").classList.remove("hidden");
+total += price;
+
+document.getElementById("total").innerText = "Total: KSh " + total;
+}
+
+function selectAdventure(name){
+document.getElementById("selectedAdventure").value = name;
+window.location.href="#booking";
+}
+
+function sendAdventureOrder(){
+let name = document.getElementById("customerName").value;
+let phone = document.getElementById("customerPhone").value;
+let location = document.getElementById("customerLocation").value;
+let adventure = document.getElementById("selectedAdventure").value;
+let product = document.getElementById("selectedProduct").value;
+let size = document.getElementById("size").value;
+let notes = document.getElementById("notes").value;
+
+let cartText = cartList.length > 0 ? cartList.join("%0A") : "No cart items selected";
+
+let message =
+"🔥 NEW ADVENTURE TRIBE BOOKING / ORDER 🔥%0A%0A" +
+"Name: " + name + "%0A" +
+"Phone: " + phone + "%0A" +
+"Location: " + location + "%0A%0A" +
+"Adventure: " + adventure + "%0A" +
+"Merchandise: " + product + "%0A" +
+"Size: " + size + "%0A" +
+"Notes: " + notes + "%0A%0A" +
+"Cart Items:%0A" + cartText + "%0A%0A" +
+"Cart Total: KSh " + total;
+
+window.open("https://wa.me/254795165085?text=" + message,"_blank");
+}
+
+function addReview(){
+let name = document.getElementById("reviewName").value;
+let text = document.getElementById("reviewText").value;
+
+if(name === "" || text === ""){
+alert("Please fill all fields");
+return;
+}
+
+const container = document.getElementById("reviews-container");
+const review = document.createElement("div");
+
+review.className = "card feature";
+review.innerHTML = "<p>“" + text + "”</p><br><strong>— " + name + "</strong>";
+
+container.prepend(review);
+
+document.getElementById("reviewName").value = "";
+document.getElementById("reviewText").value = "";
 }
 </script>
 

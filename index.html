@@ -9,222 +9,51 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}
-
-body{
-font-family:'Montserrat',sans-serif;
-background:#050505;
-color:#f4f1ea;
-overflow-x:hidden;
-}
-
-#loader{
-position:fixed;
-inset:0;
-background:#000;
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:9999;
-font-weight:900;
-letter-spacing:5px;
-transition:1s;
-}
-
-nav{
-position:fixed;
-top:0;
-width:100%;
-padding:20px 8%;
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:rgba(0,0,0,.5);
-backdrop-filter:blur(12px);
-z-index:1000;
-}
-
+body{font-family:'Montserrat',sans-serif;background:#050505;color:#f4f1ea;overflow-x:hidden}
+#loader{position:fixed;inset:0;background:#000;display:flex;justify-content:center;align-items:center;z-index:9999;font-weight:900;letter-spacing:5px;transition:1s}
+nav{position:fixed;top:0;width:100%;padding:20px 8%;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.5);backdrop-filter:blur(12px);z-index:1000}
 .logo{font-weight:900;letter-spacing:4px}
-
 nav ul{display:flex;gap:25px;list-style:none}
-
-nav a{
-text-decoration:none;
-color:white;
-font-size:.9rem;
-transition:.3s;
-}
-
+nav a{text-decoration:none;color:white;font-size:.9rem;transition:.3s}
 nav a:hover{color:#d0c5a5}
 
-.hero{
-min-height:100vh;
-background:
-linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.88)),
-url("adventuretribe-brand.png");
-background-size:cover;
-background-position:center;
-display:flex;
-align-items:end;
-padding:120px 8%;
-}
+.hero{min-height:100vh;background:linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.88)),url("adventuretribe-brand.png");background-size:cover;background-position:center;display:flex;align-items:end;padding:120px 8%}
+.hero-content{max-width:750px;animation:fadeUp 1.5s ease}
+.hero h1{font-size:4.8rem;font-weight:900;letter-spacing:6px}
+.hero p{margin:15px 0;color:#d0c5a5;letter-spacing:3px}
 
-.hero-content{
-max-width:750px;
-animation:fadeUp 1.5s ease;
-}
-
-.hero h1{
-font-size:4.8rem;
-font-weight:900;
-letter-spacing:6px;
-}
-
-.hero p{
-margin:15px 0;
-color:#d0c5a5;
-letter-spacing:3px;
-}
-
-.btns{
-margin-top:30px;
-display:flex;
-gap:15px;
-flex-wrap:wrap;
-}
-
-.btn{
-padding:14px 28px;
-border-radius:40px;
-text-decoration:none;
-font-weight:800;
-letter-spacing:1px;
-transition:.35s;
-display:inline-block;
-}
-
+.btns{margin-top:30px;display:flex;gap:15px;flex-wrap:wrap}
+.btn{padding:14px 28px;border-radius:40px;text-decoration:none;font-weight:800;letter-spacing:1px;transition:.35s;display:inline-block}
 .primary{background:#f4f1ea;color:#050505}
 .secondary{border:1px solid #f4f1ea;color:#f4f1ea}
-
 .btn:hover{transform:translateY(-5px)}
 
 section{padding:100px 8%}
-
-.title{
-text-align:center;
-font-size:2.5rem;
-letter-spacing:4px;
-margin-bottom:55px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:28px;
-}
-
-.card{
-background:rgba(255,255,255,.05);
-border:1px solid rgba(255,255,255,.08);
-border-radius:22px;
-overflow:hidden;
-backdrop-filter:blur(15px);
-transition:.4s;
-}
-
+.title{text-align:center;font-size:2.5rem;letter-spacing:4px;margin-bottom:55px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:28px}
+.card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:22px;overflow:hidden;backdrop-filter:blur(15px);transition:.4s}
 .card:hover{transform:translateY(-10px)}
-
-.card img{
-width:100%;
-height:280px;
-object-fit:cover;
-}
-
+.card img{width:100%;height:280px;object-fit:cover}
 .info{padding:22px}
+.price{color:#d0c5a5;margin:12px 0;font-weight:800}
 
-.price{
-color:#d0c5a5;
-margin:12px 0;
-font-weight:800;
-}
-
-button{
-width:100%;
-padding:14px;
-border:none;
-border-radius:10px;
-background:#f4f1ea;
-font-weight:800;
-cursor:pointer;
-transition:.3s;
-}
-
+button{width:100%;padding:14px;border:none;border-radius:10px;background:#f4f1ea;font-weight:800;cursor:pointer;transition:.3s}
 button:hover{transform:translateY(-4px)}
 
-.about{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:50px;
-align-items:center;
-}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+.about img{width:100%;border-radius:24px}
+.about p{line-height:1.9;color:#aaa}
 
-.about img{
-width:100%;
-border-radius:24px;
-}
-
-.about p{
-line-height:1.9;
-color:#aaa;
-}
-
-.contact{
-max-width:700px;
-margin:auto;
-background:rgba(255,255,255,.05);
-padding:35px;
-border-radius:25px;
-}
-
-input,select,textarea{
-width:100%;
-padding:14px;
-margin-bottom:15px;
-border:none;
-border-radius:12px;
-background:#111;
-color:white;
-}
-
-.feature{
-padding:30px;
-text-align:center;
-}
-
+.contact{max-width:700px;margin:auto;background:rgba(255,255,255,.05);padding:35px;border-radius:25px}
+input,select,textarea{width:100%;padding:14px;margin-bottom:15px;border:none;border-radius:12px;background:#111;color:white}
+.feature{padding:30px;text-align:center}
 .gallery img{height:330px}
 
-footer{
-background:#000;
-padding:60px 8%;
-text-align:center;
-color:#999;
-}
+footer{background:#000;padding:60px 8%;text-align:center;color:#999}
+footer h2{color:white;margin-bottom:15px;letter-spacing:4px}
 
-footer h2{
-color:white;
-margin-bottom:15px;
-letter-spacing:4px;
-}
-
-@keyframes fadeUp{
-from{opacity:0;transform:translateY(50px)}
-to{opacity:1;transform:translateY(0)}
-}
-
-@media(max-width:850px){
-nav ul{display:none}
-.hero h1{font-size:2.8rem}
-.about{grid-template-columns:1fr}
-}
+@keyframes fadeUp{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:850px){nav ul{display:none}.hero h1{font-size:2.8rem}.about{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -234,12 +63,12 @@ nav ul{display:none}
 
 <nav>
 <div class="logo">ADVENTURE TRIBE</div>
-
 <ul>
 <li><a href="#">Home</a></li>
 <li><a href="#activities">Activities</a></li>
 <li><a href="#shop">Merchandise</a></li>
 <li><a href="#booking">Booking</a></li>
+<li><a href="#lookbook">Lookbook</a></li>
 <li><a href="#live-reviews">Reviews</a></li>
 <li><a href="#contact">Contact</a></li>
 </ul>
@@ -249,7 +78,6 @@ nav ul{display:none}
 <div class="hero-content">
 <h1>ADVENTURE TRIBE</h1>
 <p>ESCAPE • CONNECT • EXPLORE</p>
-
 <div class="btns">
 <a href="#activities" class="btn primary">Book Adventure</a>
 <a href="#shop" class="btn secondary">Shop Merchandise</a>
@@ -259,7 +87,6 @@ nav ul{display:none}
 
 <section class="about">
 <img src="adventuretribe-brand.png">
-
 <div>
 <h2 class="title">THE TRIBE</h2>
 <p>
@@ -274,7 +101,6 @@ premium merchandise inspired by exploration culture.
 
 <section id="activities">
 <h2 class="title">UPCOMING EXPERIENCES</h2>
-
 <div class="grid">
 
 <div class="card">
@@ -309,7 +135,6 @@ premium merchandise inspired by exploration culture.
 
 <section id="shop">
 <h2 class="title">MERCHANDISE</h2>
-
 <div class="grid">
 
 <div class="card">
@@ -344,7 +169,6 @@ premium merchandise inspired by exploration culture.
 
 <section>
 <h2 class="title">YOUR CART</h2>
-
 <div class="contact">
 <div id="cart-items">No items yet.</div>
 <br>
@@ -354,7 +178,6 @@ premium merchandise inspired by exploration culture.
 
 <section id="booking">
 <h2 class="title">BOOK / ORDER</h2>
-
 <div class="contact">
 
 <input type="text" id="customerName" placeholder="Full Name">
@@ -390,9 +213,7 @@ premium merchandise inspired by exploration culture.
 <textarea id="notes" rows="4" placeholder="Extra notes"></textarea>
 
 <button onclick="sendAdventureOrder()">Send Booking / Order To WhatsApp</button>
-
 <br><br>
-
 <a class="btn secondary" href="mailto:thebrandguyagency@gmail.com?subject=Adventure%20Tribe%20Booking%20Inquiry">Email Inquiry</a>
 
 </div>
@@ -400,7 +221,6 @@ premium merchandise inspired by exploration culture.
 
 <section>
 <h2 class="title">WHY ADVENTURE TRIBE</h2>
-
 <div class="grid">
 <div class="card feature"><h3>Curated Adventures</h3><p>Premium planned outdoor experiences.</p></div>
 <div class="card feature"><h3>Safe Trips</h3><p>Organized activities with clear communication.</p></div>
@@ -409,9 +229,8 @@ premium merchandise inspired by exploration culture.
 </div>
 </section>
 
-<section>
+<section id="lookbook">
 <h2 class="title">LOOKBOOK</h2>
-
 <div class="grid gallery">
 <img src="adventuretribe-brand.png">
 <img src="adventuretribe-brand.png">
@@ -425,7 +244,6 @@ premium merchandise inspired by exploration culture.
 <div class="contact">
 <input type="text" id="reviewName" placeholder="Your Name">
 <textarea id="reviewText" rows="4" placeholder="Share your experience with Adventure Tribe..."></textarea>
-
 <button onclick="addReview()">Post Review</button>
 </div>
 
@@ -450,7 +268,6 @@ premium merchandise inspired by exploration culture.
 
 <section id="contact">
 <h2 class="title">CONTACT</h2>
-
 <div class="contact">
 <p>WhatsApp: 0795165085</p>
 <p>Email: thebrandguyagency@gmail.com</p>
@@ -469,10 +286,7 @@ premium merchandise inspired by exploration culture.
 <script>
 window.addEventListener("load",()=>{
 document.getElementById("loader").style.opacity="0";
-
-setTimeout(()=>{
-document.getElementById("loader").style.display="none";
-},1000);
+setTimeout(()=>{document.getElementById("loader").style.display="none";},1000);
 });
 
 let total = 0;
@@ -487,10 +301,9 @@ cart.innerHTML = "";
 
 const item = document.createElement("p");
 item.innerHTML = product + " - KSh " + price;
-
 cart.appendChild(item);
-cartList.push(product + " - KSh " + price);
 
+cartList.push(product + " - KSh " + price);
 total += price;
 
 document.getElementById("total").innerText = "Total: KSh " + total;
